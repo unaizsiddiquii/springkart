@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ErrorResponse {
-    private int status;
     private String message;
+    private int status;
     private LocalDateTime timestamp;
 
     public ErrorResponse(int status, String message, LocalDateTime timestamp) {
