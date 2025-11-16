@@ -8,6 +8,10 @@ import com.unaiz.springkart.exception.ResourceNotFoundException;
 import com.unaiz.springkart.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,16 +41,24 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse findAllCategory() {
-        List<Category> categoryList = categoryRepository.findAll();
-
-        if (categoryList.isEmpty()) {
+    public CategoryResponse findAllCategory(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        Sort sort = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Category> categoryPage = categoryRepository.findAll(pageable);
+        if (categoryPage.isEmpty()) {
             throw new APIException("No Category is present.");
         }
 
-        List<CategoryDTO> categoryDTOS = categoryList.stream().map(category -> modelMapper.map(category, CategoryDTO.class)).toList();
+        List<CategoryDTO> categoryDTOS = categoryPage.stream().map(category -> modelMapper.map(category, CategoryDTO.class)).toList();
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setContent(categoryDTOS);
+        categoryResponse.setPageNumber(categoryPage.getNumber());
+        categoryResponse.setPageSize(categoryPage.getSize());
+        categoryResponse.setTotalElements(categoryPage.getTotalElements());
+        categoryResponse.setTotalPages(categoryPage.getTotalPages());
+        categoryResponse.setLastPage(categoryPage.isLast());
         return categoryResponse;
     }
 

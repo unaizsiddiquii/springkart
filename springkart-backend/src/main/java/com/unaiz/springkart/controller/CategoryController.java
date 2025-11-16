@@ -1,5 +1,6 @@
 package com.unaiz.springkart.controller;
 
+import com.unaiz.springkart.config.AppConstants;
 import com.unaiz.springkart.dto.CategoryDTO;
 import com.unaiz.springkart.dto.CategoryResponse;
 import com.unaiz.springkart.entity.Category;
@@ -26,14 +27,18 @@ public class CategoryController {
 
     //get all
     @GetMapping("/public/categories")
-    public ResponseEntity<CategoryResponse> findAllCategory() {
-        CategoryResponse categoryList = categoryService.findAllCategory();
+    public ResponseEntity<CategoryResponse> findAllCategory(
+            @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORIES_BY, required = false) String sortBy,
+            @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR, required = false) String sortOrder) {
+        CategoryResponse categoryList = categoryService.findAllCategory(pageNumber, pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(categoryList, HttpStatus.OK);
     }
 
     //get by id
     @GetMapping("/public/categories/{categoryId}")
-    public ResponseEntity<Category> findCategoryById(@PathVariable long categoryId) {
+    public ResponseEntity<Category> findCategoryById(@PathVariable Long categoryId) {
         Category category = categoryService.findCategoryById(categoryId);
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
