@@ -3,11 +3,9 @@ package com.unaiz.springkart.controller;
 import com.unaiz.springkart.config.AppConstants;
 import com.unaiz.springkart.dto.ProductDTO;
 import com.unaiz.springkart.dto.ProductResponse;
-import com.unaiz.springkart.entity.Product;
 import com.unaiz.springkart.service.ProductService;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +15,10 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
     @PostMapping("/admin/categories/{categoryId}/product")
     public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO, @PathVariable Long categoryId) {
@@ -43,7 +41,7 @@ public class ProductController {
                                                                  @RequestParam(name = "pageSize", required = false, defaultValue = AppConstants.PAGE_SIZE) Integer pageSize,
                                                                  @RequestParam(name = "sortBy", required = false, defaultValue = AppConstants.SORT_PRODUCTS_BY) String sortBy,
                                                                  @RequestParam(name = "sortOrder", required = false, defaultValue = AppConstants.SORT_DIR) String sortOrder) {
-        ProductResponse productResponse = productService.getProductsByCategory(categoryId,pageNumber,pageSize,sortBy,sortOrder);
+        ProductResponse productResponse = productService.getProductsByCategory(categoryId, pageNumber, pageSize, sortBy, sortOrder);
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 

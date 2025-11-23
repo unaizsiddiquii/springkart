@@ -1,6 +1,5 @@
 package com.unaiz.springkart.service;
 
-import com.unaiz.springkart.dto.ProductDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

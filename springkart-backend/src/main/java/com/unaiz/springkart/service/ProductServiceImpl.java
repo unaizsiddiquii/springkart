@@ -8,8 +8,8 @@ import com.unaiz.springkart.exception.APIException;
 import com.unaiz.springkart.exception.ResourceNotFoundException;
 import com.unaiz.springkart.repository.CategoryRepository;
 import com.unaiz.springkart.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,17 +23,13 @@ import java.util.List;
 
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    ProductRepository productRepository;
-    @Autowired
-    CategoryRepository categoryRepository;
-    @Autowired
-    ModelMapper modelMapper;
-
-    @Autowired
-    FileService fileService;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
+    private final FileService fileService;
 
     @Value("${product.image}")
     private String path;
