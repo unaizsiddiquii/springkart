@@ -25,4 +25,8 @@ public class Role {
     @ToString.Exclude
     @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<>();
+
+    public Role(AppRole roleName) {
+        this.roleName = roleName;
+    }
 }

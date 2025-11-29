@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryDTO {
 
-    private Long categoryId;;
+    private Long categoryId;
 
     @NotBlank(message = "Category Name is required.")
     private String categoryName;
