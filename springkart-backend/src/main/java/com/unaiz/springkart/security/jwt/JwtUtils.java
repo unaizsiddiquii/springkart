@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.Date;
 
 @Component
@@ -43,27 +42,27 @@ public class JwtUtils {
 
     public String getJwtCookies(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, jwtCookie);
-        if (cookie != null) {
-            return cookie.getValue();
-        } else {
-            return null;
-        }
+        return cookie != null ? cookie.getValue() : null;
     }
 
     public ResponseCookie generateJwtCookie(UserDetailsImpl userDetails) {
         String jwt = generateTokenFromUsername(userDetails.getUsername());
-        return ResponseCookie
-                .from(jwtCookie, jwt)
+        return ResponseCookie.from(jwtCookie, jwt)
                 .path("/api")
+                .httpOnly(true)
+                .secure(false)
+                .maxAge(jwtExpirationMs / 1000)
+                .sameSite("Lax")
                 .build();
     }
 
     public ResponseCookie getCleanJwtCookie() {
-        return ResponseCookie
-                .from(jwtCookie, null)
+        return ResponseCookie.from(jwtCookie, null)
                 .path("/api")
-                .maxAge(24 * 60 * 60)
+                .secure(false)
+                .maxAge(jwtExpirationMs / 1000)
                 .httpOnly(false)
+                .sameSite("Lax")   // safe AND compatible
                 .build();
     }
 
@@ -79,14 +78,14 @@ public class JwtUtils {
 
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser()
-                .verifyWith((SecretKey) key())
+                .verifyWith(key())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
     }
 
-    private Key key() {
+    private SecretKey key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
@@ -94,16 +93,12 @@ public class JwtUtils {
         try {
             System.out.println("Validate");
             Jwts.parser()
-                    .verifyWith((SecretKey) key())
+                    .verifyWith(key())
                     .build()
                     .parseSignedClaims(authToken);
             return true;
-        } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
-            logger.error("JWT token is expired: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
+        } catch (JwtException e) {
+            logger.error("Invalid JWT: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());
         }

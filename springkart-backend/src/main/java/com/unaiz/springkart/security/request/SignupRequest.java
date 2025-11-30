@@ -3,30 +3,25 @@ package com.unaiz.springkart.security.request;
 import java.util.Set;
 
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class SignupRequest {
-    @NotBlank
-    @Size(min = 3, max = 20)
+    @NotBlank(message = "Username is already required")
+    @Size(min = 3, max = 20, message = "Username must be 3-120 characters")
     private String username;
 
-    @NotBlank
-    @Size(max = 50)
-    @Email
+    @NotBlank(message = "Email is required")
+    @Size(min = 6, max = 50, message = "Email must be between 6–50 characters")
+    @Email(message = "Invalid email format")
     private String email;
 
     private Set<String> role;
 
-    @NotBlank
-    @Size(min = 6, max = 40)
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, max = 40, message = "Password must be 6–40 characters")
     private String password;
 
-    public Set<String> getRole() {
-        return this.role;
-    }
-
-    public void setRole(Set<String> role) {
-        this.role = role;
-    }
 }
