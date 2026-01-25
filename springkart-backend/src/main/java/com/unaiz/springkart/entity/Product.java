@@ -3,6 +3,9 @@ package com.unaiz.springkart.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -28,5 +31,10 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private User user;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<CartItem> cartItem = new ArrayList<>();
+
 
 }

@@ -1,10 +1,7 @@
 package com.unaiz.springkart.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,6 +50,12 @@ public class User {
     )
     private List<Address> addresses = new ArrayList<>();
 
+    @ToString.Exclude
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private Cart cart;
+
+
+    @ToString.Exclude
     @OneToMany(mappedBy = "user",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             orphanRemoval = true)

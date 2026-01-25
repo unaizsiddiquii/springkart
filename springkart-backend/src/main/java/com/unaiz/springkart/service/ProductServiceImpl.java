@@ -6,6 +6,7 @@ import com.unaiz.springkart.entity.Category;
 import com.unaiz.springkart.entity.Product;
 import com.unaiz.springkart.exception.APIException;
 import com.unaiz.springkart.exception.ResourceNotFoundException;
+import com.unaiz.springkart.repository.CartRepository;
 import com.unaiz.springkart.repository.CategoryRepository;
 import com.unaiz.springkart.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final CartRepository cartRepository;
     private final ModelMapper modelMapper;
     private final FileService fileService;
 
@@ -104,6 +106,8 @@ public class ProductServiceImpl implements ProductService {
 
         productDTO.setSpecialPrice(calculateSpecialPrice(
                 productDTO.getPrice(), productDTO.getDiscount()));
+
+//        List<Cart> cart = cartRepository.findCartByProductId(productId);
 
         Product savedProduct = productRepository.save(productFromDB);
         return modelMapper.map(savedProduct, ProductDTO.class);
