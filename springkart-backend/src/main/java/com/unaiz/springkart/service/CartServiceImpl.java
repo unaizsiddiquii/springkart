@@ -59,7 +59,7 @@ public class CartServiceImpl implements CartService {
         if (carts.isEmpty()) {
             throw new APIException("No carts are present.");
         }
-
+        carts.forEach(this::updateCartTotalPrice);
         return carts.stream().map(this::mapToCartDTO).toList();
     }
 
